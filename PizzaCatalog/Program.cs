@@ -1,6 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
 using PizzaCatalog.WebApi.Data;
+using PizzaCatalog.WebApi.Repositories;
+using AutoMapper;
+using PizzaCatalog.WebApi.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<PizzaCatalogDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IPizzasRepository,PizzasRepository>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 

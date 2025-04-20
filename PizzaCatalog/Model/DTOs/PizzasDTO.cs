@@ -1,4 +1,6 @@
-﻿namespace PizzaCatalog.WebApi.Model.DTOs
+﻿using PizzaCatalog.WebApi.Model.Domain;
+
+namespace PizzaCatalog.WebApi.Model.DTOs
 {
     public class PizzasDTO
     {
@@ -8,7 +10,8 @@
         public decimal BasePrice { get; set; }
         public bool IsVeg { get; set; }
 
-        public string? Image {  get; set; }
+        //public string? Image {  get; set; }
+        public PizzaImages PizzaImages { get; set; }
 
         public List<PizzaToppingsDTO> Toppings { get; set; }
     }

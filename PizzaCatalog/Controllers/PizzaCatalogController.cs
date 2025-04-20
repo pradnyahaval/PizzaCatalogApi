@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PizzaCatalog.WebApi.Data;
 using PizzaCatalog.WebApi.Model.Domain;
 using PizzaCatalog.WebApi.Model.DTOs;
+using PizzaCatalog.WebApi.Repositories;
 
 namespace PizzaCatalog.WebApi.Controllers
 {
@@ -11,38 +12,19 @@ namespace PizzaCatalog.WebApi.Controllers
     [ApiController]
     public class PizzaCatalogController : ControllerBase
     {
-        private readonly PizzaCatalogDBContext _DBContext;
-        public PizzaCatalogController(PizzaCatalogDBContext pizzaCatalogDBContext)
+        private readonly IPizzasRepository _pizzasRepository;
+        public PizzaCatalogController(IPizzasRepository pizzasRepository)
         {
-            _DBContext = pizzaCatalogDBContext;
+            _pizzasRepository = pizzasRepository;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
-        {
-            var pizzaDto = _DBContext.Pizzas
-                .Include(p => p.PizzaToppings)
-                .ThenInclude(pt => pt.Toppings)
-                .Include(p => p.PizzaImages)
-                .Select(p => new PizzasDTO()
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    BasePrice = p.BasePrice,
-                    IsVeg = p.IsVeg,
-                    Image = p.PizzaImages.PizzaImageUrl,
-                    Toppings = p.PizzaToppings.Select(pt => new PizzaToppingsDTO()
-                    {
-                        Id = pt.Toppings.Id,
-                        Name = pt.Toppings.Name
-                    }).ToList()
-                }).ToList();
+        public async Task<IActionResult> GetAll()
+        {            
+            var pizzaDto = await _pizzasRepository.GetPizzasAsync();
 
-            if(pizzaDto != null)
-            {
+            if (pizzaDto != null)
                 return Ok(pizzaDto);
-            }
 
             return NotFound();
         }
@@ -52,26 +34,7 @@ namespace PizzaCatalog.WebApi.Controllers
         public IActionResult GetPizzaById(int id)
         {
             
-            var pizza = _DBContext.Pizzas
-                .Include(pt => pt.PizzaToppings)
-                .ThenInclude(t => t.Toppings)
-                .Include(pi => pi.PizzaImages)
-                .Select(p =>  new PizzasDTO()
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    BasePrice = p.BasePrice,
-                    IsVeg = p.IsVeg,
-                    Image = p.PizzaImages.PizzaImageUrl,
-                    Toppings = p.PizzaToppings.Select( pt => new PizzaToppingsDTO()
-                    {
-                        Id = pt.Toppings.Id,
-                        Name = pt.Toppings.Name
-
-                    }).ToList()
-                })
-                .FirstOrDefault(x => x.Id == id);
+            var pizza = _pizzasRepository.GetPizzaByIdAsync(id);
 
             if(pizza != null)
             {               
@@ -82,27 +45,10 @@ namespace PizzaCatalog.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult InsertPizza(PizzaRequestDTO pizzasDTO)
+        public async Task<IActionResult> InsertPizza(PizzaRequestDTO pizzasDTO)
         {
-            var pizza = new Pizzas()
-            {
-                Name = pizzasDTO.Name,
-                Description = pizzasDTO.Description,
-                BasePrice = pizzasDTO.BasePrice,
-                IsVeg = pizzasDTO.IsVeg,
-                PizzaImages = new PizzaImages()
-                {
-                    PizzaImageUrl = pizzasDTO.Image
-                },
-                PizzaToppings = pizzasDTO.Toppings.Select(p => new PizzaToppings()
-                {                    
-                    ToppingId = p.ToppingId,
-                    IsDefault_Topping = true
-                }).ToList()               
-            };
 
-            _DBContext.Pizzas.Add(pizza);
-            _DBContext.SaveChanges();
+            var pizza = await _pizzasRepository.InsertPizzaAsync(pizzasDTO);
 
             return new CreatedResult(nameof(GetPizzaById), new { id = pizza.Id });
         }

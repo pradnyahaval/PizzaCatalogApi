@@ -45,6 +45,14 @@ namespace PizzaCatalog.WebApi.Data
                 .WithOne(pi => pi.Pizzas)
                 .HasForeignKey<PizzaImages>(pi => pi.PizzaId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Pizzas>()
+            .Property(u => u.Id)
+            .UseIdentityColumn(1, 1);
+
+            modelBuilder.Entity<PizzaImages>()
+            .Property(u => u.Id)
+            .UseIdentityColumn(1, 1);
         }
 
     }
