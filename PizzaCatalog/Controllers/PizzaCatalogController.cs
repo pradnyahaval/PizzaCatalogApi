@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PizzaCatalog.WebApi.Data;
+using PizzaCatalog.WebApi.Model.Domain;
 using PizzaCatalog.WebApi.Model.DTOs;
 
 namespace PizzaCatalog.WebApi.Controllers
@@ -78,6 +79,32 @@ namespace PizzaCatalog.WebApi.Controllers
             }
 
             return NotFound();            
+        }
+
+        [HttpPost]
+        public IActionResult InsertPizza(PizzaRequestDTO pizzasDTO)
+        {
+            var pizza = new Pizzas()
+            {
+                Name = pizzasDTO.Name,
+                Description = pizzasDTO.Description,
+                BasePrice = pizzasDTO.BasePrice,
+                IsVeg = pizzasDTO.IsVeg,
+                PizzaImages = new PizzaImages()
+                {
+                    PizzaImageUrl = pizzasDTO.Image
+                },
+                PizzaToppings = pizzasDTO.Toppings.Select(p => new PizzaToppings()
+                {                    
+                    ToppingId = p.ToppingId,
+                    IsDefault_Topping = true
+                }).ToList()               
+            };
+
+            _DBContext.Pizzas.Add(pizza);
+            _DBContext.SaveChanges();
+
+            return new CreatedResult(nameof(GetPizzaById), new { id = pizza.Id });
         }
     }
 }
