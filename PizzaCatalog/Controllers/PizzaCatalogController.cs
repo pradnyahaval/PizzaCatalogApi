@@ -53,6 +53,16 @@ namespace PizzaCatalog.WebApi.Controllers
             return new CreatedResult(nameof(GetPizzaById), pizza);
         }
 
+
+        [HttpPut]
+        public async Task<IActionResult> UpdatePizza(int pizzaid, PizzaUpdateDTO pizzaDTO)
+        {
+            
+            var pizza = await _pizzasRepository.UpdatePizzaAsync(pizzaid, pizzaDTO);
+
+            return Ok();
+        }
+
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<IActionResult> DeletePizza(int id)

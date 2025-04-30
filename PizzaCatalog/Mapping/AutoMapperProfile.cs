@@ -11,6 +11,8 @@ namespace PizzaCatalog.WebApi.Mapping
             CreateMap<Pizzas, PizzasDTO>().ReverseMap();
             CreateMap<PizzaImages, PizzaImagesDTO>().ReverseMap();
             CreateMap<PizzaToppings, PizzaToppingsDTO>().ReverseMap();
+            CreateMap<PizzaUpdateDTO, Pizzas>()
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }
                
     }

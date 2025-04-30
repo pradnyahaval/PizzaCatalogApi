@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using PizzaCatalog.WebApi.Data;
 using PizzaCatalog.WebApi.Model.Domain;
@@ -60,7 +61,6 @@ namespace PizzaCatalog.WebApi.Repositories
                     Description = p.Description,
                     BasePrice = p.BasePrice,
                     IsVeg = p.IsVeg,
-                    //Image = p.PizzaImages.PizzaImageUrl,
                     PizzaImages = new PizzaImagesDTO()
                     {
                         Id = p.PizzaImages.Id,
@@ -106,25 +106,25 @@ namespace PizzaCatalog.WebApi.Repositories
 
             var pizzaDTO = _mapper.Map<PizzasDTO>(pizza);
 
-            //var pizzaDTO = new PizzasDTO()
-            //{
-            //    Id = pizza.Id,
-            //    Name = pizza.Name,
-            //    Description = pizza.Description,
-            //    BasePrice = pizza.BasePrice,
-            //    PizzaImages = new PizzaImagesDTO()
-            //    {
-            //        Id = pizza.Id,
-            //        PizzaImageUrl = pizza.PizzaImages.PizzaImageUrl
-            //    },
-            //    Toppings = new List<Toppings>()
-            //    {
-                   
-            //    }
-            //};
-
 
             return pizzaDTO;
+        }
+
+        public async Task<PizzasDTO> UpdatePizzaAsync(int pizzaid, PizzaUpdateDTO pizzaDTO)
+        {
+            var pizza = await _dbContext.Pizzas.FindAsync(pizzaid);
+
+           
+            if(pizza != null && pizzaid == pizza.Id)
+            {
+                _mapper.Map(pizzaDTO, pizza);   //only non-nullable fields will update
+                await _dbContext.SaveChangesAsync();
+            }
+
+            var pizzaDTOdetails = _mapper.Map<PizzasDTO>(await _dbContext.Pizzas.FindAsync(pizzaid));
+
+
+            return pizzaDTOdetails;
         }
 
         public async Task DeletePizzaByIdAsync(int id)
