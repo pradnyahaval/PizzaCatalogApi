@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PizzaCatalog.WebApi.Data;
 using PizzaCatalog.WebApi.Model.Domain;
 using PizzaCatalog.WebApi.Model.DTOs;
+using PizzaCatalog.WebApi.Repositories;
 
 namespace PizzaCatalog.WebApi.Controllers
 {
@@ -10,31 +11,19 @@ namespace PizzaCatalog.WebApi.Controllers
     [ApiController]
     public class ToppingsController : ControllerBase
     {
-        private readonly PizzaCatalogDBContext _dbContext;
+        private readonly IToppingsRepository _toppingsRepository;
 
-        public ToppingsController(PizzaCatalogDBContext pizzaCatalogDBContext)
+        public ToppingsController(IToppingsRepository toppingsRepository)
         {
-            _dbContext = pizzaCatalogDBContext;
+            _toppingsRepository = toppingsRepository;
         }
 
         [HttpGet]
-        public IActionResult GetAllToppings()
+        public async Task<IActionResult> GetAllToppings()
         {
-            var toppings = _dbContext.Toppings.ToList();
-
-            var toppingsDTOList = new List<ToppingsDTO>();
             
-            foreach (var topping in toppings)
-            {
-                var toppingDTO = new ToppingsDTO()
-                {
-                    Id = topping.Id,
-                    Name = topping.Name,
-                    Price = topping.Price
-                };
-                toppingsDTOList.Add(toppingDTO);
-            }
-
+            var toppingsDTOList = await _toppingsRepository.GetAllToppingsAsync();
+                        
             if(toppingsDTOList != null)
             {
                 return Ok(toppingsDTOList);
@@ -45,18 +34,12 @@ namespace PizzaCatalog.WebApi.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public IActionResult GetToppingsById(int id)
+        public async Task<IActionResult> GetToppingsById(int id)
         {
-            var toppings = _dbContext.Toppings.FirstOrDefault(x => x.Id == id);
+            var toppingsDTO = await _toppingsRepository.GetToppingsByIdAsync(id);
 
-            if (toppings != null)
+            if (toppingsDTO != null)
             {
-                var toppingsDTO = new ToppingsDTO()
-                {
-                    Id = toppings.Id,
-                    Name = toppings.Name,
-                    Price = toppings.Price
-                };
                 return Ok(toppingsDTO);
             }
 
@@ -68,23 +51,9 @@ namespace PizzaCatalog.WebApi.Controllers
         {
             try
             {
-                var toppings = new Toppings()
-                {
-                    Name = toppingsDTO.Name,
-                    Price = toppingsDTO.Price
-                };
+                var toppingDTO = _toppingsRepository.InsertToppings(toppingsDTO);
 
-                _dbContext.Toppings.Add(toppings);
-                _dbContext.SaveChanges();
-
-                var toppingDTO = new ToppingsDTO()
-                {
-                    Id = toppings.Id,
-                    Name = toppings.Name,
-                    Price = toppings.Price
-                };
-
-                return new CreatedResult(nameof(GetToppingsById), toppingDTO);
+                return new CreatedResult(nameof(InsertToppings), toppingDTO);
               
             }
             catch (Exception ex)

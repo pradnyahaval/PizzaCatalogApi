@@ -9,6 +9,8 @@ namespace PizzaCatalog.WebApi.Mapping
         public AutoMapperProfile()
         {
             CreateMap<Pizzas, PizzasDTO>().ReverseMap();
+            CreateMap<PizzaImages, PizzaImagesDTO>().ReverseMap();
+            CreateMap<PizzaToppings, PizzaToppingsDTO>().ReverseMap();
         }
                
     }

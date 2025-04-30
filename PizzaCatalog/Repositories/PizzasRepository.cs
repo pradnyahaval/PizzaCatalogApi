@@ -30,11 +30,17 @@ namespace PizzaCatalog.WebApi.Repositories
                     BasePrice = p.BasePrice,
                     IsVeg = p.IsVeg,
                     //Image = p.PizzaImages.PizzaImageUrl,
-                    PizzaImages = p.PizzaImages,
-                    Toppings = p.PizzaToppings.Select(pt => new PizzaToppingsDTO()
+                    PizzaImages = new PizzaImagesDTO()
+                    {
+                        Id = p.PizzaImages.Id,
+                        PizzaId = p.PizzaImages.PizzaId,
+                        PizzaImageUrl = p.PizzaImages.PizzaImageUrl
+                    },
+                    PizzaToppings = p.PizzaToppings.Select(pt => new PizzaToppingsDTO()
                     {
                         Id = pt.Toppings.Id,
-                        Name = pt.Toppings.Name
+                        PizzId = pt.PizzId,
+                        ToppingId = pt.Toppings.Id
                     }).ToList()
                 }).ToListAsync();
 
@@ -55,11 +61,17 @@ namespace PizzaCatalog.WebApi.Repositories
                     BasePrice = p.BasePrice,
                     IsVeg = p.IsVeg,
                     //Image = p.PizzaImages.PizzaImageUrl,
-                    PizzaImages = p.PizzaImages,
-                    Toppings = p.PizzaToppings.Select(pt => new PizzaToppingsDTO()
+                    PizzaImages = new PizzaImagesDTO()
+                    {
+                        Id = p.PizzaImages.Id,
+                        PizzaId = p.PizzaImages.PizzaId,
+                        PizzaImageUrl = p.PizzaImages.PizzaImageUrl
+                    },
+                    PizzaToppings = p.PizzaToppings.Select(pt => new PizzaToppingsDTO()
                     {
                         Id = pt.Toppings.Id,
-                        Name = pt.Toppings.Name
+                        PizzId = pt.PizzId,
+                        ToppingId = pt.Toppings.Id
 
                     }).ToList()
                 })
@@ -94,7 +106,37 @@ namespace PizzaCatalog.WebApi.Repositories
 
             var pizzaDTO = _mapper.Map<PizzasDTO>(pizza);
 
+            //var pizzaDTO = new PizzasDTO()
+            //{
+            //    Id = pizza.Id,
+            //    Name = pizza.Name,
+            //    Description = pizza.Description,
+            //    BasePrice = pizza.BasePrice,
+            //    PizzaImages = new PizzaImagesDTO()
+            //    {
+            //        Id = pizza.Id,
+            //        PizzaImageUrl = pizza.PizzaImages.PizzaImageUrl
+            //    },
+            //    Toppings = new List<Toppings>()
+            //    {
+                   
+            //    }
+            //};
+
+
             return pizzaDTO;
+        }
+
+        public async Task DeletePizzaByIdAsync(int id)
+        {
+            var pizza = await _dbContext.Pizzas.FindAsync(id);
+
+            if(pizza != null)
+            {
+                _dbContext.Pizzas.Remove(pizza);
+                _dbContext.SaveChanges();
+            }
+                
         }
     }
 }

@@ -38,7 +38,8 @@ namespace PizzaCatalog.WebApi.Data
             modelBuilder.Entity<PizzaToppings>()
                 .HasOne(t => t.Toppings)
                 .WithMany(pt => pt.PizzaToppings)
-                .HasForeignKey(t => t.ToppingId);
+                .HasForeignKey(t => t.ToppingId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Pizzas>()
                 .HasOne(p => p.PizzaImages)

@@ -6,7 +6,8 @@ namespace PizzaCatalog.WebApi.Model.DTOs
     {
         [BindNever]
         public int Id { get; set; }
-        public string Name { get; set; }
+        public int PizzId { get; set; }
+        public int ToppingId { get; set; }
 
     }
 }

@@ -9,5 +9,7 @@ namespace PizzaCatalog.WebApi.Repositories
         Task<PizzasDTO> GetPizzaByIdAsync(int id);
 
         Task<PizzasDTO> InsertPizzaAsync(PizzaRequestDTO pizzasDTO);
+
+        Task DeletePizzaByIdAsync(int id);
     }
 }

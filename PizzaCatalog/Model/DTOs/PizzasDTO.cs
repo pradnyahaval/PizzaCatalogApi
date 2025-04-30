@@ -11,8 +11,8 @@ namespace PizzaCatalog.WebApi.Model.DTOs
         public bool IsVeg { get; set; }
 
         //public string? Image {  get; set; }
-        public PizzaImages PizzaImages { get; set; }
+        public PizzaImagesDTO PizzaImages { get; set; }
 
-        public List<PizzaToppingsDTO> Toppings { get; set; }
+        public List<PizzaToppingsDTO> PizzaToppings { get; set; }
     }
 }

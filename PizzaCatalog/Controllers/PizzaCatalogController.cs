@@ -31,10 +31,10 @@ namespace PizzaCatalog.WebApi.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public IActionResult GetPizzaById(int id)
+        public async Task<IActionResult> GetPizzaById(int id)
         {
             
-            var pizza = _pizzasRepository.GetPizzaByIdAsync(id);
+            var pizza = await _pizzasRepository.GetPizzaByIdAsync(id);
 
             if(pizza != null)
             {               
@@ -50,7 +50,16 @@ namespace PizzaCatalog.WebApi.Controllers
 
             var pizza = await _pizzasRepository.InsertPizzaAsync(pizzasDTO);
 
-            return new CreatedResult(nameof(GetPizzaById), new { id = pizza.Id });
+            return new CreatedResult(nameof(GetPizzaById), pizza);
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<IActionResult> DeletePizza(int id)
+        {
+            await _pizzasRepository.DeletePizzaByIdAsync(id);
+
+            return Ok();
         }
     }
 }
