@@ -19,31 +19,60 @@ namespace PizzaCatalog.WebApi.Repositories
 
         public async Task<List<PizzasDTO>> GetPizzasAsync()
         {
+            //var pizzasDTO = await _dbContext.Pizzas
+            //    .Include(p => p.PizzaToppings)
+            //    .ThenInclude(pt => pt.Toppings)
+            //    .Include(p => p.PizzaImages)
+            //    .Select(p => new PizzasDTO()
+            //    {
+            //        Id = p.Id,
+            //        Name = p.Name,
+            //        Description = p.Description,
+            //        BasePrice = p.BasePrice,
+            //        IsVeg = p.IsVeg,
+            //        PizzaImages = new PizzaImagesDTO()
+            //        {
+            //            Id = p.PizzaImages.Id,
+            //            PizzaId = p.PizzaImages.PizzaId,
+            //            PizzaImageUrl = p.PizzaImages.PizzaImageUrl
+            //        },
+            //        PizzaToppings = p.PizzaToppings.Select(pt => new PizzaToppingsDTO()
+            //        {
+            //            Id = pt.Toppings.Id,
+            //            PizzId = pt.PizzId,
+            //            ToppingId = pt.Toppings.Id
+            //        }).ToList()
+            //    }).ToListAsync();
+
             var pizzasDTO = await _dbContext.Pizzas
-                .Include(p => p.PizzaToppings)
-                .ThenInclude(pt => pt.Toppings)
-                .Include(p => p.PizzaImages)
-                .Select(p => new PizzasDTO()
+            .Include(p => p.PizzaToppings)
+            .ThenInclude(pt => pt.Toppings)
+            .Include(p => p.PizzaImages)
+            .Select(p => new PizzasDTO()
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                BasePrice = p.BasePrice,
+                IsVeg = p.IsVeg,
+                PizzaToppings = p.PizzaToppings.Select(pt => new PizzaToppingsDTO()
                 {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    BasePrice = p.BasePrice,
-                    IsVeg = p.IsVeg,
-                    //Image = p.PizzaImages.PizzaImageUrl,
-                    PizzaImages = new PizzaImagesDTO()
-                    {
-                        Id = p.PizzaImages.Id,
-                        PizzaId = p.PizzaImages.PizzaId,
-                        PizzaImageUrl = p.PizzaImages.PizzaImageUrl
-                    },
-                    PizzaToppings = p.PizzaToppings.Select(pt => new PizzaToppingsDTO()
-                    {
-                        Id = pt.Toppings.Id,
-                        PizzId = pt.PizzId,
-                        ToppingId = pt.Toppings.Id
-                    }).ToList()
-                }).ToListAsync();
+                    Id = pt.Id,
+                    PizzId = pt.PizzId,
+                    ToppingId = pt.ToppingId
+
+                }).ToList(),
+                PizzaImages = new PizzaImagesDTO()
+                {
+                    Id = p.PizzaImages.Id,
+                    PizzaId = p.PizzaImages.Id,
+                    PizzaImageUrl = p.PizzaImages.PizzaImageUrl
+
+                }
+            })
+            .ToListAsync();
+            
+
 
             return pizzasDTO;
         }

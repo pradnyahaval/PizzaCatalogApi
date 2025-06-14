@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PizzaCatalog.WebApi.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using PizzaCatalog.WebApi.Model.Domain;
 using PizzaCatalog.WebApi.Model.DTOs;
 using PizzaCatalog.WebApi.Repositories;
@@ -71,5 +68,11 @@ namespace PizzaCatalog.WebApi.Controllers
 
             return Ok();
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> AddToppingsToPizza(int pizzaId, int toppingId)
+        //{
+        //    return new CreatedResult(nameof(GetPizzaById), pizzaId); ;
+        //}
     }
 }

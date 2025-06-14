@@ -6,6 +6,6 @@ namespace PizzaCatalog.WebApi.Model.DTOs
     {
         public int Id { get; set; }
         public int PizzaId { get; set; }
-        public string? PizzaImageUrl { get; set; }
+        public string PizzaImageUrl { get; set; }
     }
 }

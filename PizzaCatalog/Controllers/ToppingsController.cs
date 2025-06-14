@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using PizzaCatalog.WebApi.Data;
-using PizzaCatalog.WebApi.Model.Domain;
+﻿using Microsoft.AspNetCore.Mvc;
 using PizzaCatalog.WebApi.Model.DTOs;
 using PizzaCatalog.WebApi.Repositories;
 
