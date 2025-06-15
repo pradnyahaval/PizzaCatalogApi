@@ -50,7 +50,6 @@ namespace PizzaCatalog.WebApi.Controllers
             return new CreatedResult(nameof(GetPizzaById), pizza);
         }
 
-
         [HttpPut]
         public async Task<IActionResult> UpdatePizza(int pizzaid, PizzaUpdateDTO pizzaDTO)
         {
@@ -69,10 +68,15 @@ namespace PizzaCatalog.WebApi.Controllers
             return Ok();
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> AddToppingsToPizza(int pizzaId, int toppingId)
-        //{
-        //    return new CreatedResult(nameof(GetPizzaById), pizzaId); ;
-        //}
+        [HttpPost("AddTopping")]
+        public async Task<IActionResult> AddToppingsToPizza(int pizzaId, int toppingId)
+        {            
+            if (pizzaId != 0 && toppingId != 0)
+            {
+                await _pizzasRepository.AddToppingsToPizzaAsync(pizzaId, toppingId);
+                return Ok(); // new CreatedResult( pizzaId);
+            }
+            return NotFound();
+        }
     }
 }

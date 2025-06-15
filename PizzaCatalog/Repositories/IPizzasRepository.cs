@@ -13,6 +13,9 @@ namespace PizzaCatalog.WebApi.Repositories
         Task<PizzasDTO> UpdatePizzaAsync(int pizzaid, PizzaUpdateDTO pizzaDTO);
 
         Task DeletePizzaByIdAsync(int id);
-      
+
+        Task AddToppingsToPizzaAsync(int pizzaId, int toppingId);
+        
+
     }
 }

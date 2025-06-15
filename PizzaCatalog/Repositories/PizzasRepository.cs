@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PizzaCatalog.WebApi.Data;
 using PizzaCatalog.WebApi.Model.Domain;
@@ -71,7 +72,7 @@ namespace PizzaCatalog.WebApi.Repositories
                 }
             })
             .ToListAsync();
-            
+
 
 
             return pizzasDTO;
@@ -123,7 +124,7 @@ namespace PizzaCatalog.WebApi.Repositories
                 },
                 PizzaToppings = pizzasDTO.Toppings.Select(p => new PizzaToppings()
                 {
-                    
+
                     ToppingId = p.ToppingId,
                     IsDefault_Topping = true
                 }).ToList()
@@ -143,8 +144,8 @@ namespace PizzaCatalog.WebApi.Repositories
         {
             var pizza = await _dbContext.Pizzas.FindAsync(pizzaid);
 
-           
-            if(pizza != null && pizzaid == pizza.Id)
+
+            if (pizza != null && pizzaid == pizza.Id)
             {
                 _mapper.Map(pizzaDTO, pizza);   //only non-nullable fields will update
                 await _dbContext.SaveChangesAsync();
@@ -160,12 +161,36 @@ namespace PizzaCatalog.WebApi.Repositories
         {
             var pizza = await _dbContext.Pizzas.FindAsync(id);
 
-            if(pizza != null)
+            if (pizza != null)
             {
                 _dbContext.Pizzas.Remove(pizza);
                 _dbContext.SaveChanges();
             }
-                
+
+        }
+
+        public async Task AddToppingsToPizzaAsync(int pizzaId, int toppingId)
+        {
+            //check if topping is present in toppings table
+            var topping = await _dbContext.Toppings.AnyAsync(t => t.Id == toppingId);
+
+            //check if topping is already present for pizza
+            var ispizzaToppingPresent = await _dbContext.PizzaToppings
+                                .AnyAsync(pt => pt.PizzId == pizzaId && pt.ToppingId == toppingId);
+
+            if (!topping) throw new KeyNotFoundException($"topping with ID {toppingId} not found.");
+
+            if (topping && !ispizzaToppingPresent)
+            {
+                var pizzaTopping = new PizzaToppings()
+                {
+                    PizzId = pizzaId,
+                    ToppingId = toppingId,
+                    IsDefault_Topping = true
+                };
+
+                await _dbContext.PizzaToppings.AddAsync(pizzaTopping);
+            }
         }
     }
 }
