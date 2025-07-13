@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PizzaCatalog.WebApi.Model.Domain;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PizzaCatalog.WebApi.Model.DTOs;
 using PizzaCatalog.WebApi.Repositories;
 
@@ -14,8 +14,10 @@ namespace PizzaCatalog.WebApi.Controllers
         {
             _pizzasRepository = pizzasRepository;
         }
-
+          
         [HttpGet]
+        [Route("GetAll")]
+        [Authorize(Roles ="Reader,Writers")]
         public async Task<IActionResult> GetAll()
         {            
             var pizzaDto = await _pizzasRepository.GetPizzasAsync();
@@ -27,7 +29,8 @@ namespace PizzaCatalog.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("{id:int}")]
+        [Route("GetPizzaById/{id:int}")]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetPizzaById(int id)
         {
             
@@ -42,6 +45,8 @@ namespace PizzaCatalog.WebApi.Controllers
         }
 
         [HttpPost]
+        [Route("InsertPizza")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> InsertPizza(PizzaRequestDTO pizzasDTO)
         {
 
@@ -51,6 +56,8 @@ namespace PizzaCatalog.WebApi.Controllers
         }
 
         [HttpPut]
+        [Route("UpdatePizza")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdatePizza(int pizzaid, PizzaUpdateDTO pizzaDTO)
         {
             
@@ -60,7 +67,8 @@ namespace PizzaCatalog.WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:int}")]
+        [Route("DeletePizza/{id:int}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeletePizza(int id)
         {
             await _pizzasRepository.DeletePizzaByIdAsync(id);
@@ -68,7 +76,9 @@ namespace PizzaCatalog.WebApi.Controllers
             return Ok();
         }
 
-        [HttpPost("AddTopping")]
+        [HttpPost] // [HttpPost("AddTopping")]
+        [Route("AddToppingsToPizza")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> AddToppingsToPizza(int pizzaId, int toppingId)
         {            
             if (pizzaId != 0 && toppingId != 0)

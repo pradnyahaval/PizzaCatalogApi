@@ -16,6 +16,7 @@ namespace PizzaCatalog.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllToppings")]
         public async Task<IActionResult> GetAllToppings()
         {
             
@@ -30,7 +31,7 @@ namespace PizzaCatalog.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("{id:int}")]
+        [Route("GetToppingsById/{id:int}")]
         public async Task<IActionResult> GetToppingsById(int id)
         {
             var toppingsDTO = await _toppingsRepository.GetToppingsByIdAsync(id);
@@ -44,6 +45,7 @@ namespace PizzaCatalog.WebApi.Controllers
         }
 
         [HttpPost]
+        [Route("InsertToppings")]
         public IActionResult InsertToppings(ToppingsDTO toppingsDTO)
         {
             try

@@ -190,6 +190,7 @@ namespace PizzaCatalog.WebApi.Repositories
                 };
 
                 await _dbContext.PizzaToppings.AddAsync(pizzaTopping);
+                _dbContext.SaveChanges();
             }
         }
     }
