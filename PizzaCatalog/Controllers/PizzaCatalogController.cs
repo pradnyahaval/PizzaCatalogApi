@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PizzaCatalog.WebApi.Model.DTOs;
 using PizzaCatalog.WebApi.Repositories;
+using System.Text.Json;
 
 namespace PizzaCatalog.WebApi.Controllers
 {
@@ -10,22 +11,39 @@ namespace PizzaCatalog.WebApi.Controllers
     public class PizzaCatalogController : ControllerBase
     {
         private readonly IPizzasRepository _pizzasRepository;
-        public PizzaCatalogController(IPizzasRepository pizzasRepository)
+        private readonly ILogger<PizzaCatalogController> _logger;
+
+        public PizzaCatalogController(IPizzasRepository pizzasRepository, ILogger<PizzaCatalogController> logger)
         {
             _pizzasRepository = pizzasRepository;
+            _logger = logger;
         }
           
         [HttpGet]
         [Route("GetAll")]
         [Authorize(Roles ="Reader,Writers")]
         public async Task<IActionResult> GetAll()
-        {            
-            var pizzaDto = await _pizzasRepository.GetPizzasAsync();
+        {
+            try
+            {
+                throw new Exception();
+                _logger.LogInformation("Calling method PizzaCatalogController.GetAll()");
 
-            if (pizzaDto != null)
-                return Ok(pizzaDto);
+                var pizzaDto = await _pizzasRepository.GetPizzasAsync();
 
-            return NotFound();
+                _logger.LogInformation($"Response of Pizzas: {JsonSerializer.Serialize(pizzaDto)}");
+
+                if (pizzaDto != null)
+                    return Ok(pizzaDto);
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+            
         }
 
         [HttpGet]
@@ -33,15 +51,24 @@ namespace PizzaCatalog.WebApi.Controllers
         [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetPizzaById(int id)
         {
-            
-            var pizza = await _pizzasRepository.GetPizzaByIdAsync(id);
 
-            if(pizza != null)
-            {               
-                return Ok(pizza);
+            try
+            {
+                var pizza = await _pizzasRepository.GetPizzaByIdAsync(id);
+
+                if (pizza != null)
+                {
+                    return Ok(pizza);
+                }
+
+                return NotFound();
             }
+            catch (Exception)
+            {
 
-            return NotFound();            
+
+                throw;
+            }           
         }
 
         [HttpPost]
