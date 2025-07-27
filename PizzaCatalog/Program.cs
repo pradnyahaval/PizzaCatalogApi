@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using PizzaCatalog.WebApi.CustomeMiddlerwares;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 //adding logs
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File($"Logs/logs-{DateTime.Today.Date : dd-MM-yyyy}.txt", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Information()
     .CreateLogger();
 
@@ -105,6 +106,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//adding custom middleware
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

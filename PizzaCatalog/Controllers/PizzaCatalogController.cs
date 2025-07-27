@@ -26,7 +26,6 @@ namespace PizzaCatalog.WebApi.Controllers
         {
             try
             {
-                throw new Exception();
                 _logger.LogInformation("Calling method PizzaCatalogController.GetAll()");
 
                 var pizzaDto = await _pizzasRepository.GetPizzasAsync();

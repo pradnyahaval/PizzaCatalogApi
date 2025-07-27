@@ -18,7 +18,7 @@ namespace PizzaCatalog.WebApi.Controllers
 
         [HttpGet]
         [Route("GetAllToppings")]
-        [Authorize(Roles = "Reader,Writers")]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAllToppings()
         {
             
