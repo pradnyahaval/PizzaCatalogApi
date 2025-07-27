@@ -21,7 +21,7 @@ namespace PizzaCatalog.WebApi.Controllers
           
         [HttpGet]
         [Route("GetAll")]
-        [Authorize(Roles ="Reader,Writers")]
+        [Authorize(Roles ="Reader,Writer")]
         public async Task<IActionResult> GetAll()
         {
             try

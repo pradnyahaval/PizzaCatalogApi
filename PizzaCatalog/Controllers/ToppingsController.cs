@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PizzaCatalog.WebApi.Model.DTOs;
 using PizzaCatalog.WebApi.Repositories;
 
@@ -17,6 +18,7 @@ namespace PizzaCatalog.WebApi.Controllers
 
         [HttpGet]
         [Route("GetAllToppings")]
+        [Authorize(Roles = "Reader,Writers")]
         public async Task<IActionResult> GetAllToppings()
         {
             
@@ -32,6 +34,7 @@ namespace PizzaCatalog.WebApi.Controllers
 
         [HttpGet]
         [Route("GetToppingsById/{id:int}")]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetToppingsById(int id)
         {
             var toppingsDTO = await _toppingsRepository.GetToppingsByIdAsync(id);
@@ -46,6 +49,7 @@ namespace PizzaCatalog.WebApi.Controllers
 
         [HttpPost]
         [Route("InsertToppings")]
+        [Authorize(Roles = "Writer")]
         public IActionResult InsertToppings(ToppingsDTO toppingsDTO)
         {
             try
