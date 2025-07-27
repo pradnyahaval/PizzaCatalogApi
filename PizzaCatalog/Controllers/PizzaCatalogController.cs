@@ -13,7 +13,7 @@ namespace PizzaCatalog.WebApi.Controllers
         private readonly IPizzasRepository _pizzasRepository;
         private readonly ILogger<PizzaCatalogController> _logger;
 
-        public PizzaCatalogController(IPizzasRepository pizzasRepository, ILogger<PizzaCatalogController> logger)
+        public PizzaCatalogController(IPizzasRepository pizzasRepository,ILogger<PizzaCatalogController> logger)
         {
             _pizzasRepository = pizzasRepository;
             _logger = logger;

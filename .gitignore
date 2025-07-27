@@ -487,3 +487,4 @@ $RECYCLE.BIN/
 appsettings.json
 appsettings.Development.json
 secrets.json
+Logs/
